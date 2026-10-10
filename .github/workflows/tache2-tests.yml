@@ -1,0 +1,31 @@
+name: Tache 2 - Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v6
+
+      - name: Installer Java 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Preparer les modules necessaires
+        run: .\mvnw.cmd -B -ntp -pl tika-core -am install "-DskipTests"
+
+      - name: Executer les 31 nouveaux tests
+        run: .\mvnw.cmd -B -ntp -pl tika-core "-Dtest=FilenameUtilsGeneratedTest,FilenameUtilsSanitizedGeneratedTest,FilenameUtilsMutationTest" test
