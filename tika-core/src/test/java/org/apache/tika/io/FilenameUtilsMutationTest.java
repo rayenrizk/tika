@@ -17,8 +17,14 @@
 package org.apache.tika.io;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.metadata.TikaCoreProperties;
@@ -204,5 +210,67 @@ public class FilenameUtilsMutationTest {
                 "abcdefghij.txt",
                 FilenameUtils.getSanitizedEmbeddedFilePath(
                         metadata, ".bin", 10));
+    }
+    @Test
+    void testInvalidMimeTypeFallsBackToBinExtension() {
+        Metadata metadata = new Metadata();
+        metadata.set(Metadata.CONTENT_TYPE, "not-a-valid-mime-type");
+
+        assertEquals(".bin", FilenameUtils.calculateExtension(metadata, ".txt"));
+    }
+
+    @Test
+    void testSanitizedNameReturnsNullWhenOnlyTheExtensionRemains() {
+        Metadata metadata = new Metadata();
+        metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, ".txt");
+
+        assertNull(FilenameUtils.getSanitizedEmbeddedFileName(metadata, ".bin", 255));
+    }
+
+    @Test
+    void testSanitizedPathReturnsNullWhenNameIsEmpty() {
+        Metadata metadata = new Metadata();
+        metadata.set(TikaCoreProperties.EMBEDDED_RESOURCE_PATH, "/");
+
+        assertNull(FilenameUtils.getSanitizedEmbeddedFilePath(metadata, ".bin", 255));
+    }
+
+    @Test
+    void testSanitizedPathReturnsNullWhenOnlyTheExtensionRemains() {
+        Metadata metadata = new Metadata();
+        metadata.set(TikaCoreProperties.EMBEDDED_RESOURCE_PATH, "folder/.txt");
+
+        assertNull(FilenameUtils.getSanitizedEmbeddedFilePath(metadata, ".bin", 255));
+    }
+
+    @Test
+    void testPdfMimeTypeUsesPdfExtension() {
+        Metadata metadata = new Metadata();
+        metadata.set(Metadata.CONTENT_TYPE, "application/pdf");
+
+        assertEquals(".pdf", FilenameUtils.calculateExtension(metadata, ".bin"));
+    }
+
+    @Test
+    void testResolveWithinAllowsAChildThatDoesNotExist(@TempDir Path directory)
+            throws IOException {
+        Path expected = directory.resolve("not-created-yet.txt");
+
+        assertEquals(expected, FilenameUtils.resolveWithin(directory, "not-created-yet.txt"));
+    }
+    @Test
+    void testSanitizedNameReturnsNullWhenExtractedNameIsBlank() {
+        Metadata metadata = new Metadata();
+        metadata.set(TikaCoreProperties.RESOURCE_NAME_KEY, "folder/ ");
+
+        assertNull(FilenameUtils.getSanitizedEmbeddedFileName(metadata, ".bin", 255));
+    }
+
+    @Test
+    void testResolveWithinAllowsAnExistingChild(@TempDir Path directory) throws IOException {
+        Path child = directory.resolve("existing.txt");
+        Files.createFile(child);
+
+        assertEquals(child, FilenameUtils.resolveWithin(directory, "existing.txt"));
     }
 }
