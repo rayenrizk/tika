@@ -25,7 +25,7 @@ jobs:
           cache: maven
 
       - name: Preparer les modules necessaires
-        run: .\mvnw.cmd -B -ntp -pl tika-core -am install "-DskipTests"
+        run: .\mvnw.cmd -B -ntp -pl tika-annotation-processor -am install "-DskipTests"
 
       - name: Executer les 31 nouveaux tests
         run: .\mvnw.cmd -B -ntp -pl tika-core "-Dtest=FilenameUtilsGeneratedTest,FilenameUtilsSanitizedGeneratedTest,FilenameUtilsMutationTest" test
