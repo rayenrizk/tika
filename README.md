@@ -368,3 +368,10 @@ Selon [l'énoncé officiel de la tâche 2](https://github.com/umontreal-diro/IFT
 - **Lien vers le README qui documente la tâche :** https://github.com/rayenrizk/tika/blob/main/README.md
 
 Le README du dépôt du cours doit garder le [format officiel](https://github.com/umontreal-diro/IFT3913/blob/2026/.github/PULL_REQUEST_TEMPLATE/tache2-readme.md) avec les deux noms et identifiants GitHub. L'ajout des liens et l'ouverture de la pull request sont **des étapes de remise distinctes** de l'écriture de ce document. Le fichier `README.md` à la racine du dépôt `rayenrizk/tika` affiche encore la présentation générale d’Apache Tika à la date de cette rédaction. Il faut y publier **ce `README.md`** pour que le lien de remise pointe réellement vers la documentation de la tâche. Cette publication n'est pas effectuée par la création du fichier local téléchargé.
+
+
+---
+
+## IFT3913 — Tâche 3 (automatisation de la sécurité)
+
+Consultez [la documentation de la tâche 3](docs/tache3/README.md) pour les sept exemples Semgrep, les rapports avant/après, le workflow de sécurité et l'action Rickroll. La branche de travail est [`tache3-semgrep`](https://github.com/rayenrizk/tika/tree/tache3-semgrep).
