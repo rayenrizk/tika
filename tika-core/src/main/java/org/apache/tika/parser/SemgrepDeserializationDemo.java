@@ -16,22 +16,24 @@
  */
 package org.apache.tika.parser;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 /**
- * Demonstration de l'utilisation d'un hachage faible.
- * Code de demonstration uniquement.
+ * Demonstration d'une deserialisation non securisee.
+ * Code volontairement vulnerable pour IFT3913.
  */
 public final class SemgrepDeserializationDemo {
 
     private SemgrepDeserializationDemo() {
     }
 
-    public static byte[] insecureSignatureDigest(byte[] data)
-            throws NoSuchAlgorithmException {
+    public static Object readUnsafeObject(InputStream input)
+            throws IOException, ClassNotFoundException {
 
-        MessageDigest digest = MessageDigest.getInstance("SHA-1");
-        return digest.digest(data);
+        try (ObjectInputStream stream = new ObjectInputStream(input)) {
+            return stream.readObject();
+        }
     }
 }
