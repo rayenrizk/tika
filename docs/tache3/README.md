@@ -83,7 +83,7 @@ Ces alertes sont **préexistantes** et ne doivent pas être présentées comme i
 
 **Après cinq vulnérabilités :** le scan complet réalisé le 12 novembre 2026 signalait **7 alertes : 2 anciennes et 5 nouvelles**.
 
-**Après sept vulnérabilités :** le scan différentiel a confirmé **7 nouvelles alertes distinctes**. Le total attendu du scan complet est **9 alertes (2 anciennes + 7 nouvelles)**, sous réserve de refaire le scan complet avec la même version des règles. Ce total de 9 est une **prévision**, pas encore un résultat mesuré et vérifié pour cette étape finale.
+**Après sept vulnérabilités :** le scan différentiel a confirmé **7 nouvelles alertes distinctes**. Le **scan complet final a aussi été exécuté et vérifié sur GitHub Actions le 12 novembre 2026 : 9 alertes au total, dont 2 préexistantes et 7 nouvelles**. Le job a réussi et a produit l'artifact `comparatif-semgrep-avant-apres`. [Exécution de preuve](https://github.com/rayenrizk/tika/actions/runs/43273761102).
 
 Reproduire la comparaison complète :
 
@@ -101,7 +101,7 @@ Vérifier également les chemins des alertes pour distinguer les sept classes aj
 
 Un second workflow, [`.github/workflows/tache3-rapport-semgrep.yml`](../../.github/workflows/tache3-rapport-semgrep.yml), a été ajouté afin de produire une **preuve reproductible** de la comparaison complète. Cette action lance le même ensemble de règles `p/security-audit` sur le répertoire Java de Tika, écrit `docs/tache3/semgrep-apres-final.json`, puis compare les paires (règle, chemin) avec le fichier initial `semgrep-avant.json`. Elle archive les deux fichiers JSON comme artifact `comparatif-semgrep-avant-apres` et affiche les comptes dans le résumé du job.
 
-**Exécution de contrôle :** [GitHub Actions — rapport Semgrep complet](https://github.com/rayenrizk/tika/actions/runs/43273761102). Le nombre total final ne doit être considéré comme confirmé que lorsque cette exécution est terminée et son résumé consultable. Cet ajout améliore la traçabilité, mais ne modifie pas le comportement du job bloquant `semgrep-security`.
+**Exécution de contrôle validée :** [GitHub Actions — rapport Semgrep complet](https://github.com/rayenrizk/tika/actions/runs/43273761102) : **succès**, 331 fichiers Java analysés, 9 résultats au scan complet, 2 avant les changements, 7 nouveaux. Les deux JSON sont sauvegardés dans l'artifact `comparatif-semgrep-avant-apres`. Cet ajout améliore la traçabilité sans modifier le comportement du job bloquant `semgrep-security`.
 
 ## 5. Rickroll en cas d'échec de tests
 
@@ -123,7 +123,8 @@ L'action composite écrit une annotation GitHub Actions et ajoute, dans le résu
 ## 6. État, limites et remise
 
 - **Vérifié :** sept types Semgrep distincts, sept nouvelles détections bloquantes, analyse de référence, compilation locale et absence d'erreurs Checkstyle, contrôle GitHub Actions négatif et positif pour Semgrep.
-- **À vérifier :** scan complet final et document de remise dans le dépôt `umontreal-diro/IFT3913`. Le test de Rickroll sur échec effectif et la contre-vérification sur tests réussis sont maintenant documentés. Les workflows GitHub indépendants ne sont pas tous nécessairement verts.
+- **Validé également :** scan complet final (2 avant, 9 après, 7 nouvelles alertes) avec artifact GitHub Actions ; Rickroll déclenché sur échec effectif et ignoré lorsque les tests réussissent.
+- **À faire :** pull request officielle de remise dans `umontreal-diro/IFT3913`, branche `2026`. Les workflows GitHub indépendants ne sont pas tous nécessairement verts.
 - **Limite principale :** les classes ajoutées ne sont pas invoquées par l'application. Le rapport décrit donc honnêtement des vulnérabilités **illustratives**, et non des failles démontrées dans le parcours normal d'utilisation du logiciel.
 
 ## 7. Utilisation de l'intelligence artificielle
