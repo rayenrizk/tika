@@ -97,6 +97,12 @@ $apres = Get-Content semgrep-apres-final.json -Raw | ConvertFrom-Json
 
 Vérifier également les chemins des alertes pour distinguer les sept classes ajoutées des deux fichiers anciens.
 
+### Vérification automatisée du scan complet
+
+Un second workflow, [`.github/workflows/tache3-rapport-semgrep.yml`](../../.github/workflows/tache3-rapport-semgrep.yml), a été ajouté afin de produire une **preuve reproductible** de la comparaison complète. Cette action lance le même ensemble de règles `p/security-audit` sur le répertoire Java de Tika, écrit `docs/tache3/semgrep-apres-final.json`, puis compare les paires (règle, chemin) avec le fichier initial `semgrep-avant.json`. Elle archive les deux fichiers JSON comme artifact `comparatif-semgrep-avant-apres` et affiche les comptes dans le résumé du job.
+
+**Exécution de contrôle :** [GitHub Actions — rapport Semgrep complet](https://github.com/rayenrizk/tika/actions/runs/43273761102). Le nombre total final ne doit être considéré comme confirmé que lorsque cette exécution est terminée et son résumé consultable. Cet ajout améliore la traçabilité, mais ne modifie pas le comportement du job bloquant `semgrep-security`.
+
 ## 5. Rickroll en cas d'échec de tests
 
 **Action réutilisable :** [`.github/actions/rickroll/action.yml`](../../.github/actions/rickroll/action.yml)  
