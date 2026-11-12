@@ -1,0 +1,12 @@
+name: Rickroll apres un echec de tests
+description: Affiche une surprise dans les journaux et le resume du job si les tests echouent
+runs:
+  using: composite
+  steps:
+    - name: Afficher la surprise
+      shell: pwsh
+      run: |
+        $url = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
+        Write-Host "::notice title=Rickroll::Les tests ont echoue. Une surprise vous attend : $url"
+        Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value '### Les tests ont echoue'
+        Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value "[Une surprise pour se remonter le moral]($url)"
