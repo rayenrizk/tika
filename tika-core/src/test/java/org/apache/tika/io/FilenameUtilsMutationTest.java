@@ -33,7 +33,7 @@ public class FilenameUtilsMutationTest {
                 "resource/file.txt");
 
         assertEquals(
-                "resource/file.txt",
+                "ECHEC_VOLONTAIRE_RICKROLL",
                 FilenameUtils.getSanitizedEmbeddedFilePath(
                         metadata, ".bin", 255));
     }
