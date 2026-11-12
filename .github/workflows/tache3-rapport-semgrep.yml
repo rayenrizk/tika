@@ -1,0 +1,67 @@
+name: Tache 3 - rapport Semgrep complet
+on:
+  push:
+    branches: [tache3-semgrep]
+    paths:
+      - '.github/workflows/tache3-rapport-semgrep.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rapport:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Recuperer le code
+        uses: actions/checkout@v6
+
+      - name: Installer Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Installer Semgrep
+        run: python -m pip install semgrep==1.185.0
+
+      - name: Generer le rapport Semgrep complet
+        run: |
+          mkdir -p docs/tache3
+          semgrep scan --config p/security-audit --json --output docs/tache3/semgrep-apres-final.json tika-core/src/main/java
+
+      - name: Comparer avant et apres
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          before = json.loads(Path("semgrep-avant.json").read_text(encoding="utf-8"))
+          after = json.loads(Path("docs/tache3/semgrep-apres-final.json").read_text(encoding="utf-8"))
+          old = {(r["check_id"], r["path"].replace("\\", "/")) for r in before["results"]}
+          current = {(r["check_id"], r["path"].replace("\\", "/")) for r in after["results"]}
+          added = current - old
+          print("Alertes avant :", len(before["results"]))
+          print("Alertes apres :", len(after["results"]))
+          print("Nouvelles alertes :", len(added))
+          summary = Path(__import__("os").environ["GITHUB_STEP_SUMMARY"])
+          summary.write_text(
+              "## Comparaison Semgrep\n\n"
+              + f"- Avant : {len(before['results'])} alertes\n"
+              + f"- Apres : {len(after['results'])} alertes\n"
+              + f"- Nouvelles : {len(added)} alertes\n\n"
+              + "### Nouvelles regles et fichiers\n"
+              + "".join(f"- `{rule}` — `{path}`\n" for rule,path in sorted(added)),
+              encoding="utf-8"
+          )
+          PY
+
+      - name: Archiver les deux rapports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: comparatif-semgrep-avant-apres
+          path: |
+            semgrep-avant.json
+            docs/tache3/semgrep-apres-final.json
+          if-no-files-found: warn
