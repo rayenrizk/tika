@@ -112,12 +112,12 @@ Le workflow de tests JUnit de la tâche 2 reste présent. Son étape de tests po
 
 L'action composite écrit une annotation GitHub Actions et ajoute, dans le résumé du job, un lien vers une vidéo Rickroll. Elle n'inverse pas le statut du test : un test en échec reste un échec.
 
-**Validation à compléter :** le déclenchement lors d'un échec effectif de JUnit n'a pas encore été observé sur un job GitHub Actions. Il faut conserver une preuve d'exécution où l'étape de tests est en échec et celle du Rickroll est exécutée. Un job dont tous les tests réussissent doit au contraire ignorer l'étape Rickroll.
+**Validation confirmée :** [exécution GitHub Actions n°35, branche temporaire `verification-rickroll`](https://github.com/rayenrizk/tika/actions/runs/43272682270) (commit `62db6bfc9`). Un test JUnit a été modifié volontairement **uniquement sur cette branche de démonstration** : l'étape `Executer les 31 nouveaux tests` a échoué et l'étape `Rickroll si les tests Tika echouent` s'est exécutée **avec succès**. Le job global reste rouge, ce qui est attendu. En contre-vérification, [l'exécution où les tests réussissent](https://github.com/rayenrizk/tika/actions/runs/43270988537) a ignoré le Rickroll. La branche `verification-rickroll` ne doit pas être fusionnée.
 
 ## 6. État, limites et remise
 
 - **Vérifié :** sept types Semgrep distincts, sept nouvelles détections bloquantes, analyse de référence, compilation locale et absence d'erreurs Checkstyle, contrôle GitHub Actions négatif et positif pour Semgrep.
-- **À vérifier :** compilation ou tests CI après les dernières modifications du workflow, démonstration du Rickroll lors d'un véritable échec de tests, scan complet final et document de remise dans le dépôt `umontreal-diro/IFT3913`.
+- **À vérifier :** scan complet final et document de remise dans le dépôt `umontreal-diro/IFT3913`. Le test de Rickroll sur échec effectif et la contre-vérification sur tests réussis sont maintenant documentés. Les workflows GitHub indépendants ne sont pas tous nécessairement verts.
 - **Limite principale :** les classes ajoutées ne sont pas invoquées par l'application. Le rapport décrit donc honnêtement des vulnérabilités **illustratives**, et non des failles démontrées dans le parcours normal d'utilisation du logiciel.
 
 ## 7. Utilisation de l'intelligence artificielle
